@@ -25,13 +25,30 @@ class RoverService
     {
         $this->x = $startPosition[0];
         $this->y = $startPosition[1];
-        $this->direction = strtoupper(direction);
+        $this->direction = strtoupper($direction);
         $this->obstacles = $obstacles;
     }
 
-    public function execute()
+    public function execute(string $commands)
     {
-        return [];
+        foreach(str_split(strtolower($commands)) as $command) {
+                match ($command) {
+                    'f' => $this->moveForward(),
+                    'l' => $this->moveLeft(),
+                    'r' => $this->moveRight(),
+                    default => throw new \InvalidArgumentException("Invalid command: $command"),
+                };
+                if($this->obstacleFound) {
+                    break;
+                }
+        }
+
+        return [
+            'final_position' => [$this->x, $this->y],
+            'direction' => $this->direction,
+            'obstacle_found' => $this->obstacleFound,
+            'stopped_position' => $this->stoppedPosition,
+        ];
     }
 
     private function moveForward()
