@@ -36,7 +36,63 @@ class RoverServiceTest extends TestCase
         $this->assertEquals([0,0], $response['final_position']);
         $this->assertTrue($response['obstacle_found']);
         $this->assertEquals([0, 0], $response['stopped_position']);
-        dd($response);
     }
+
+    public function test_move_left() 
+    {
+        $rover = new RoverService([0, 0], 'N');
+        $response = $rover->execute('l');
+        $this->assertEquals([0,0], $response['final_position']);
+        $this->assertEquals('W', $response['direction']);
+    }
+
+    public function test_move_right() 
+    {
+        $rover = new RoverService([0, 0], 'N');
+        $response = $rover->execute('r');
+        $this->assertEquals([0,0], $response['final_position']);
+        $this->assertEquals('E', $response['direction']);
+    }
+
+    public function test_move_left_obstacle() 
+    {
+        $rover = new RoverService([0, 0], 'N', [[1, 0]]);
+        $response = $rover->execute('l');
+
+        $this->assertEquals([0,0], $response['final_position']);
+        $this->assertFalse($response['obstacle_found']);
+        $this->assertEquals('W', $response['direction']);
+    }
+
+    public function test_move_right_obstacle() 
+    {
+        $rover = new RoverService([0, 0], 'N', [[1, 0]]);
+        $response = $rover->execute('r');
+
+        $this->assertEquals([0,0], $response['final_position']);
+        $this->assertFalse($response['obstacle_found']);
+        $this->assertEquals('E', $response['direction']);
+    }
+
+    public function test_move_multiple_commands()
+   {
+        $rover = new RoverService([0, 0], 'N');
+        $response = $rover->execute('frffflfff' );
+
+        $this->assertEquals([3, 4], $response['final_position']);
+        $this->assertFalse($response['obstacle_found']);
+        $this->assertEquals('N', $response['direction']);
+   } 
+
+   public function test_move_multiple_commands_obstacles()
+   {
+        $rover = new RoverService([0, 0], 'N', [[1, 1], [2, 2]]);
+        $response = $rover->execute('frffflfff');
+
+        $this->assertEquals([0, 1], $response['final_position']);
+        $this->assertTrue($response['obstacle_found']);
+        $this->assertEquals([0, 1], $response['stopped_position']);
+        $this->assertEquals('E', $response['direction']);
+   }
 
 }

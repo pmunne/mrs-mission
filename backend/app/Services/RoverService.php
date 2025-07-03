@@ -61,7 +61,7 @@ class RoverService
         };
 
         $newX = ($this->x + $mx + self::MAP_SIZE) % self::MAP_SIZE;
-        $newY = ($this->x + $my + self::MAP_SIZE) % self::MAP_SIZE;
+        $newY = ($this->y + $my + self::MAP_SIZE) % self::MAP_SIZE;
         if($this->isObstacle($newX, $newY)) {
             $this->obstacleFound = true;
             $this->stoppedPosition = [$this->x, $this->y];
@@ -74,12 +74,14 @@ class RoverService
 
     private function moveLeft() 
     {
-
+        $i = array_search($this->direction, self::DIRECTIONS);
+        $this->direction = self::DIRECTIONS[($i - 1 + count(self::DIRECTIONS)) % count(self::DIRECTIONS)];
     }
 
     private function moveRight() 
     {
-
+        $i = array_search($this->direction, self::DIRECTIONS);
+        $this->direction = self::DIRECTIONS[($i + 1) % count(self::DIRECTIONS)];
     }
 
     private function isObstacle(int $x, int $y) 
