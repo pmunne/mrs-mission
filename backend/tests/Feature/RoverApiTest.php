@@ -18,6 +18,10 @@ class RoverApiTest extends TestCase
         $response->assertStatus(200);
     }
 
+    /**
+     * Test the rover API start endpoint.
+     * @return void
+     */
     public function test_api_start_success() 
     {
         $data = [
@@ -37,6 +41,10 @@ class RoverApiTest extends TestCase
         ]);
     }
 
+    /**
+     * Test the rover API start endpoint with invalid data.
+     * @return void
+     */
     public function test_api_start_failure() 
     {
         $data = [

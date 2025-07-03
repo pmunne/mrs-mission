@@ -9,6 +9,12 @@ use App\Services\RoverService;
 class RoverController extends Controller 
 {
 
+    /**
+     *  Handle the rquest to start the rover.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function start(Request $request) 
     {
         
@@ -26,6 +32,11 @@ class RoverController extends Controller
 
     }
 
+    /**
+     * Validate the incoming request.
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
     private function validator(Request $request): array 
     {
 
