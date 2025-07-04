@@ -36,6 +36,9 @@
 </template>
 <script setup>
 import {ref} from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const initialPosition = ref([0,0])
 const direction = ref('N')
@@ -66,11 +69,19 @@ const startMission = async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data),
+
         })
         if(!response.ok) {
             throw new Error('Failed to start mission')
         }
-        result.value = await response.json()
+        const responseData= await response.json()
+        localStorage.setItem('missionData', JSON.stringify({
+            config: data,
+            result: responseData,
+        }))
+
+        result.value = responseData
+        router.push({ name: 'mission-control' })
     }catch (err) {
         error.value = err.message || 'An error occurred'
     }finally {
