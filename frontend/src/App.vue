@@ -1,5 +1,4 @@
 <script setup>
-import RoverForm from './components/RoverForm.vue'
 </script>
 
 <template>
