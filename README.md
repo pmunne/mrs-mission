@@ -41,9 +41,6 @@ The .env will not be in the git ignore to secure proper functionality.
 git clone https://github.com/pmunne/mrs-mission.git
 cd mrs-mission
 docker-compose up -d --build
-cd ./frontend
-npm install
-npm run build
 ```
 
 ## Access
