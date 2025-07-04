@@ -1,5 +1,13 @@
 <template>
-    <div>
-        <h2>Rover status:</h2>
+    <div class="status">
+        <p>Position: {{ position[0] }}, {{ position[1] }}</p>
+        <p>Direction: {{ direction }}</p>   
     </div>
 </template>
+<script setup>
+const props = defineProps({
+    position: Array,
+    direction: String
+})
+
+</script>
