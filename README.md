@@ -12,6 +12,8 @@ Translates a sequence of commands into rover instructions on a 200x200 board.
 - Docker (PHP, MYSQL, NGINX)
 - PHPUnit (unit + feature testing)
 
+The .env will not be in the git ignore to secure proper functionality. 
+
 ---
 
 ## Features 
@@ -56,6 +58,7 @@ http://localhost:8080/api/rover/start
 docker exec -it mrs-mission-php bash
 php artisan test 
 ```
+
 
 
 ---
