@@ -6,8 +6,14 @@
 </template>
 <script setup>
 const props = defineProps({
-    position: Array,
-    direction: String
+    position: {
+        type: Array,
+        required: true
+    },
+    direction: {
+        type: String,
+        required: true
+    },
 })
 
 </script>
