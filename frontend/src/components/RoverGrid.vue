@@ -2,7 +2,9 @@
     <div class="grid">
         <div v-for="y in grid" :key="'row '+y" class="row">
             <div v-for="x in grid" :key="'col '+x" class="col" :class="{
-                rover: roverAt(x-1, grid-y),obstacle: obstaclesAt(x-1, grid-y), path: path(x - 1, grid - y)
+                    rover: roverAt(centerX + x - half - 1, centerY + (half - y + 1)),
+                    obstacle: obstaclesAt(centerX + x - half - 1, centerY + (half - y + 1)),
+                    path: path(centerX + x - half - 1, centerY + (half - y + 1))
                  }"></div>
         </div>
 
@@ -27,7 +29,11 @@ const props = defineProps({
     }
 })
 
-const grid = 10
+const grid = 11
+const half = Math.floor(grid / 2)
+
+const centerX = computed(() => props.position[0])
+const centerY = computed(() => props.position[1])
 
 const roverAt = (x, y) => props.position[0] === x && props.position[1] === y
 const obstaclesAt = (x, y) => props.obstacles.some(([ox, oy]) => ox === x && oy === y)
@@ -55,13 +61,13 @@ const path = (x,y) =>  props.path.some(([px, py]) => px === x && py === y)
     }
 
     .col.rover {
-        background-color:blue;
+        background-color:blue !important;
     }
 
     .col.obstacle {
         background-color: black;
     }
-    .cel.path {
+    .col.path {
         background-color: lightblue;
     }
 
