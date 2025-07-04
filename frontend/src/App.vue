@@ -5,10 +5,10 @@ import RoverForm from './components/RoverForm.vue'
 <template>
     <div class="layout">
     <header>
-        <h1>Notes</h1>
+        <h1>Mars mission</h1>
     </header>
     <main class="contaner">
-      <RoverForm />
+      <router-view/>
     </main>
     <footer>
       <p>Pau Munné Martínez</p>
