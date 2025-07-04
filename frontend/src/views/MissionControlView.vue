@@ -3,19 +3,66 @@
         <h2>Rover controls</h2>
         <RoverStatus :position="position" :direction="direction"/>
         <RoverGrid :position="position" :obstacles="obstacles" :path="path"/>
+        <RoverControls @command="handleCommand"/>
     </div>
 </template>
 <script setup>
 import RoverStatus from '../components/RoverStatus.vue'
-import RoverGrid from '../components/RoverGrid.vue'
+import RoverGrid from '../components/RoverGrid.vue' 
+import RoverControls from '../components/RoverControls.vue'
 import { ref } from 'vue';
 
 const missionData = JSON.parse(localStorage.getItem('missionData') || '{}')
-console.log('Mission data:', missionData)
+
 
 const position = ref(missionData.result?.final_position || [0, 0])
 const direction = ref(missionData.result?.direction || 'N')
 const obstacles = ref(missionData.config?.obstacles || [])
 const path = ref(missionData.result?.path || [position.value])
+
+const handleCommand = async (command) => {
+    const data = {
+        initial_position: position.value,
+        direction: direction.value,
+        commands: command,
+        obstacles: obstacles.value
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/api/rover/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+
+        })
+        if(!response.ok) {
+            throw new Error('Command failed')
+        }
+        const responseData= await response.json()
+        position.value = responseData.final_position
+        direction.value = responseData.direction
+        path.value.push([...responseData.final_position])
+        localStorage.setItem('missionData', JSON.stringify({
+            config: {
+                initial_position: missionData.config.initial_position, 
+                direction: responseData.direction,
+                obstacles: obstacles.value,
+                commands: missionData.config.commands + command,
+            },
+            result: {
+                final_position: responseData.final_position,
+                direction: responseData.direction,
+                obstacle_found: responseData.obstacle_found,
+                stopped_position: responseData.stopped_position,
+                path: path.value,
+            }
+        }))
+
+    }catch(err) {
+        console.error('Error command' + err.message)
+    }
+}
 
 </script>

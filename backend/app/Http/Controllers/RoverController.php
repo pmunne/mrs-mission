@@ -28,7 +28,7 @@ class RoverController extends Controller
 
         $res  = $rover->execute($validated['commands']);    
 
-        return response()->json([$res]);
+        return response()->json($res);
 
     }
 
