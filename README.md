@@ -14,12 +14,50 @@ Translates a sequence of commands into rover instructions on a 200x200 board.
 
 ---
 
+## Features 
+
+### Backend
+- Move the rover typing (f, r, l)
+- Obstacle detection
+- Api enpoint logic
+- Board wrapping on edges
+- Input validation
+- Tested with PHP unit
+
+### Frontend
+- Mission configuration to start from (initial position, direction, obstacles and command string)
+- Dynamic rover grid: 
+    - Rover Path
+    - Obstacles 
+- Command input
+- Reset mission
+
+
 ## Installation guide
 
 ```bash 
 git clone https://github.com/pmunne/mrs-mission.git
 cd mrs-mission
+docker-compose up -d --build
 ```
+
+## Access
+frontend:
+```bash 
+http://localhost:8080
+```
+backend endpoint:
+```bash 
+http://localhost:8080/api/rover/start
+```
+
+## Testing
+```bash
+docker exec -it mrs-mission-php bash
+php artisan test 
+```
+
+
 ---
 
 ## Author 
