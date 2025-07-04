@@ -1,8 +1,10 @@
 <template>
     <div class="mission-control">
         <h2>Rover controls</h2>
+    
         <RoverStatus :position="position" :direction="direction"/>
         <RoverGrid :position="position" :obstacles="obstacles" :path="path"/>
+        <div v-if="obstacleAlert" class="obstacle-alert">{{ obstacleAlert }}</div>
         <RoverControls @command="handleCommand"/>
         <button @click="resetMission" class="reset-button">Restart</button>
     </div>
@@ -21,6 +23,8 @@ const resetMission = () => {
         router.push({name: 'home'})
     }
 }
+
+const obstacleAlert = ref('');
 
 const missionData = JSON.parse(localStorage.getItem('missionData') || '{}')
 
@@ -51,6 +55,12 @@ const handleCommand = async (command) => {
             throw new Error('Command failed')
         }
         const responseData= await response.json()
+
+        if(responseData.obstacle_found) {
+            obstacleAlert.value = `Obstacle found at position [${responseData.stopped_position.join(', ')}]`
+            return
+        }
+
         position.value = responseData.final_position
         direction.value = responseData.direction
         path.value.push([...responseData.final_position])
@@ -101,5 +111,10 @@ const handleCommand = async (command) => {
         background-color: white;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         text-align: center;
+    }
+    .obstacle-alert {
+        color: darkorange;
+        margin-top: 1rem;
+        font-weight: bold;
     }
 </style>

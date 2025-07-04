@@ -75,12 +75,19 @@ const startMission = async () => {
             throw new Error('Failed to start mission')
         }
         const responseData= await response.json()
+        if(responseData.obstacle_found) {
+            error.value = `Obstacle found at position [${responseData.stopped_position.join(', ')}]`
+            return
+        }
+
+
         localStorage.setItem('missionData', JSON.stringify({
             config: data,
             result: responseData,
         }))
 
         result.value = responseData
+
         router.push({ name: 'mission-control' })
     }catch (err) {
         error.value = err.message || 'An error occurred'
