@@ -1,7 +1,9 @@
 <template>
     <div class="rover-form">
         <h2>Mars rover mission</h2>
-        <form @submit.prevent="startMission" >  
+        <form @submit.prevent="startMission" > 
+            <div v-if="loading">Starting mission...</div>
+            <div v-if="error" class="error">{{ error }}</div> 
             <div>
                 <label>Initial position (x, y)</label>
                 <input v-model="initialPosition[0]" type="number" placeholder="X" required>
@@ -22,10 +24,14 @@
             </div>
             <div>
                 <label>Obstacles</label>
-                <input v-model="obstacles" type="text" placeholder="2,2;5,5" required>
+                <input v-model="obstacles" type="text" placeholder="2,2;5,5">
             </div>
             <button type="submit">Start mission</button>
         </form>
+        <div v-if="result" class="result">
+            <h3>Mission result</h3>
+            <pre>{{ result }}</pre>
+        </div>
     </div>
 </template>
 <script setup>
@@ -36,14 +42,40 @@ const direction = ref('N')
 const commands = ref('')
 const obstacles = ref('')
 
+const loading = ref(false)
+const error = ref(null)
+const result = ref(null)
 
-const startMission = () => {
-    console.log({
-        initialPosition: initialPosition.value,
+
+const startMission = async () => {
+    loading.value = true
+    error.value = null
+    result.value = null
+
+    const data = {
+        initial_position: initialPosition.value,
         direction: direction.value,
         commands: commands.value,
         obstacles: orderObstacles(obstacles.value),
-    })
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/api/rover/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+        if(!response.ok) {
+            throw new Error('Failed to start mission')
+        }
+        result.value = await response.json()
+    }catch (err) {
+        error.value = err.message || 'An error occurred'
+    }finally {
+        loading.value = false   
+    }
 }
 
 //Order the obstacles to send them in the correct format
@@ -67,6 +99,17 @@ const orderObstacles = (input) => {
 .rover-form select {
     margin: 0.5rem 0;
     display: block;
+}
+.result {
+    background: #f9f9f9;
+    padding: 1rem;
+    border: 1px solid #ccc; 
+    margin-top: 1rem;
+}
+
+.error {
+    color: red;
+    margin: 1rem 0;
 }
 
 </style>
